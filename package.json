@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "start": "node index",
+    "dev": "nodemon index"
   },
   "keywords": [],
   "author": "",
@@ -15,6 +17,7 @@
   },
   "dependencies": {
     "@types/jest": "^30.0.0",
+    "express": "^5.3.0",
     "hex-to-binary": "^1.0.1"
   }
 }
