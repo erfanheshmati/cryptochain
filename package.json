@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@types/jest": "^30.0.0",
+    "axios": "^1.20.0",
     "express": "^5.3.0",
     "hex-to-binary": "^1.0.1",
     "redis": "^6.3.0",
