@@ -96,46 +96,85 @@ describe('Transaction', () => {
   describe('update()', () => {
     let originalSignature, originalSenderOutput, nextRecipient, nextAmount;
 
-    beforeEach(() => {
-      originalSignature = transaction.input.signature;
-      originalSenderOutput = transaction.outputMap[senderWallet.publicKey];
-      nextRecipient = 'next-recipient-public-key';
-      nextAmount = 50;
-
-      transaction.update({
-        senderWallet,
-        recipient: nextRecipient,
-        amount: nextAmount,
+    describe('and the amount is invalid', () => {
+      it('throws an error', () => {
+        expect(() =>
+          transaction.update({
+            senderWallet,
+            recipient: 'foo',
+            amount: 999999,
+          }),
+        ).toThrow('Amount exceeds balance');
       });
     });
 
-    it('outputs the amount to the next recipient', () => {
-      expect(transaction.outputMap[nextRecipient]).toEqual(nextAmount);
-    });
+    describe('and the amount is valid', () => {
+      beforeEach(() => {
+        originalSignature = transaction.input.signature;
+        originalSenderOutput = transaction.outputMap[senderWallet.publicKey];
+        nextRecipient = 'next-recipient-public-key';
+        nextAmount = 50;
 
-    it('subtract the amount from the original sender output amount', () => {
-      expect(transaction.outputMap[senderWallet.publicKey]).toEqual(
-        originalSenderOutput - nextAmount,
-      );
-    });
+        transaction.update({
+          senderWallet,
+          recipient: nextRecipient,
+          amount: nextAmount,
+        });
+      });
 
-    it('maintains a total output that matches the input amount', () => {
-      expect(
-        Object.values(transaction.outputMap).reduce((total, outputAmount) => {
-          return total + outputAmount;
-        }, 0),
-      ).toEqual(transaction.input.amount);
-    });
+      it('outputs the amount to the next recipient', () => {
+        expect(transaction.outputMap[nextRecipient]).toEqual(nextAmount);
+      });
 
-    it('resigns the transaction', () => {
-      expect(transaction.input.signature).not.toEqual(originalSignature);
-    });
+      it('subtract the amount from the original sender output amount', () => {
+        expect(transaction.outputMap[senderWallet.publicKey]).toEqual(
+          originalSenderOutput - nextAmount,
+        );
+      });
 
-    it('produces a unique hash when the properties have changed on an input', () => {
-      const foo = {};
-      const originalHash = cryptoHash(foo);
-      foo['a'] = 'a';
-      expect(cryptoHash(foo)).not.toEqual(originalHash);
+      it('maintains a total output that matches the input amount', () => {
+        expect(
+          Object.values(transaction.outputMap).reduce((total, outputAmount) => {
+            return total + outputAmount;
+          }, 0),
+        ).toEqual(transaction.input.amount);
+      });
+
+      it('re-signs the transaction', () => {
+        expect(transaction.input.signature).not.toEqual(originalSignature);
+      });
+
+      it('produces a unique hash when the properties have changed on an input', () => {
+        const foo = {};
+        const originalHash = cryptoHash(foo);
+        foo['a'] = 'a';
+        expect(cryptoHash(foo)).not.toEqual(originalHash);
+      });
+
+      describe('and another update for the same recipient', () => {
+        let addedAmount;
+
+        beforeEach(() => {
+          addedAmount = 80;
+          transaction.update({
+            senderWallet,
+            recipient: nextRecipient,
+            amount: addedAmount,
+          });
+        });
+
+        it('adds the amount to the existing output for the recipient', () => {
+          expect(transaction.outputMap[nextRecipient]).toEqual(
+            nextAmount + addedAmount,
+          );
+        });
+
+        it('subtracts the amount from the original sender output amount', () => {
+          expect(transaction.outputMap[senderWallet.publicKey]).toEqual(
+            originalSenderOutput - nextAmount - addedAmount,
+          );
+        });
+      });
     });
   });
 });
