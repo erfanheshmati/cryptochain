@@ -1,5 +1,6 @@
 const INITIAL_DIFFICULTY = 3;
 const MINE_RATE = 1000; // 1 second
+const STARTING_BALANCE = 1000;
 
 const GENESIS_DATA = {
   timestamp: 1,
