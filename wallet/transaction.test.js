@@ -1,6 +1,6 @@
 const Transaction = require('./transaction');
 const Wallet = require('./index');
-const { verifySignature } = require('../utils');
+const { verifySignature, cryptoHash } = require('../utils');
 
 describe('Transaction', () => {
   let transaction, senderWallet, recipient, amount;
@@ -110,7 +110,7 @@ describe('Transaction', () => {
     });
 
     it('outputs the amount to the next recipient', () => {
-      expect(transaction.outputMap[nextAmount]).toEqual(nextAmount);
+      expect(transaction.outputMap[nextRecipient]).toEqual(nextAmount);
     });
 
     it('subtract the amount from the original sender output amount', () => {
@@ -122,13 +122,20 @@ describe('Transaction', () => {
     it('maintains a total output that matches the input amount', () => {
       expect(
         Object.values(transaction.outputMap).reduce((total, outputAmount) => {
-          total + outputAmount;
+          return total + outputAmount;
         }, 0),
       ).toEqual(transaction.input.amount);
     });
 
     it('resigns the transaction', () => {
       expect(transaction.input.signature).not.toEqual(originalSignature);
+    });
+
+    it('produces a unique hash when the properties have changed on an input', () => {
+      const foo = {};
+      const originalHash = cryptoHash(foo);
+      foo['a'] = 'a';
+      expect(cryptoHash(foo)).not.toEqual(originalHash);
     });
   });
 });
