@@ -13,8 +13,6 @@ pubsub.run().catch((error) => {
   console.error('Redis Pub/Sub startup failed:', error);
 });
 
-setTimeout(() => pubsub.broadcastChain(), 1000);
-
 app.get('/api/blocks', (req, res) => {
   res.json(blockchain.chain);
 });
@@ -22,6 +20,7 @@ app.get('/api/blocks', (req, res) => {
 app.post('/api/mine', (req, res) => {
   const { data } = req.body;
   blockchain.addBlock({ data });
+  pubsub.broadcastChain();
   res.redirect('/api/blocks');
 });
 
