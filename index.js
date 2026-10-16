@@ -5,6 +5,7 @@ const tcpPortUsed = require('tcp-port-used');
 const axios = require('axios');
 const TransactionPool = require('./wallet/transaction-pool');
 const Wallet = require('./wallet');
+const TransactionMiner = require('./app/transaction-miner');
 
 const app = express();
 app.use(express.json()); // Parse incoming JSON requests
@@ -13,6 +14,12 @@ const blockchain = new Blockchain();
 const transactionPool = new TransactionPool();
 const pubsub = new Pubsub({ blockchain, transactionPool });
 const wallet = new Wallet();
+const transactionMiner = new TransactionMiner({
+  blockchain,
+  transactionPool,
+  wallet,
+  pubsub,
+});
 
 pubsub.run().catch((error) => {
   console.error('Redis Pub/Sub startup failed:', error);
@@ -52,6 +59,11 @@ app.post('/api/transact', async (req, res) => {
 
 app.get('/api/transaction-pool-map', (req, res) => {
   res.json(transactionPool.transactionMap);
+});
+
+app.get('/api/mine-transactions', (req, res) => {
+  transactionMiner.mineTransactions();
+  res.redirect('/api/blocks');
 });
 
 const rootPort = 3000;
