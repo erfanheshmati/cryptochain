@@ -57,9 +57,14 @@ app.get('/api/transaction-pool-map', (req, res) => {
 const rootPort = 3000;
 let PORT = 3000;
 
-const syncChains = async () => {
-  const response = await axios.get(`http://localhost:${rootPort}/api/blocks`);
+const syncOnConnect = async () => {
+  let response = await axios.get(`http://localhost:${rootPort}/api/blocks`);
   blockchain.replaceChain(response.data);
+
+  response = await axios.get(
+    `http://localhost:${rootPort}/api/transaction-pool-map`,
+  );
+  transactionPool.setMap(response.data);
 };
 
 tcpPortUsed.check(PORT, '127.0.0.1').then((inUse) => {
@@ -69,6 +74,6 @@ tcpPortUsed.check(PORT, '127.0.0.1').then((inUse) => {
 
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
-    if (PORT !== rootPort) syncChains();
+    if (PORT !== rootPort) syncOnConnect();
   });
 });
