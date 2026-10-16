@@ -10,8 +10,8 @@ const app = express();
 app.use(express.json()); // Parse incoming JSON requests
 
 const blockchain = new Blockchain();
-const pubsub = new Pubsub({ blockchain });
 const transactionPool = new TransactionPool();
+const pubsub = new Pubsub({ blockchain, transactionPool });
 const wallet = new Wallet();
 
 pubsub.run().catch((error) => {
@@ -29,7 +29,7 @@ app.post('/api/mine', (req, res) => {
   res.redirect('/api/blocks');
 });
 
-app.post('/api/transact', (req, res) => {
+app.post('/api/transact', async (req, res) => {
   let { recipient, amount } = req.body;
   let transaction = transactionPool.existingTransaction({
     inputAddress: wallet.publicKey,
@@ -46,7 +46,12 @@ app.post('/api/transact', (req, res) => {
   }
 
   transactionPool.setTransaction(transaction);
+  await pubsub.broadcastTransaction(transaction);
   res.json({ transaction });
+});
+
+app.get('/api/transaction-pool-map', (req, res) => {
+  res.json(transactionPool.transactionMap);
 });
 
 const rootPort = 3000;
