@@ -103,12 +103,10 @@ describe('Wallet', () => {
             recipient: wallet.publicKey,
             amount: 50,
           });
-
           transactionTwo = new Wallet().createTransaction({
             recipient: wallet.publicKey,
             amount: 60,
           });
-
           blockchain.addBlock({ data: [transactionOne, transactionTwo] });
         });
 
@@ -123,6 +121,62 @@ describe('Wallet', () => {
               transactionOne.outputMap[wallet.publicKey] +
               transactionTwo.outputMap[wallet.publicKey],
           );
+        });
+
+        describe('and the wallet has made a transaction', () => {
+          let recentTransaction;
+
+          beforeEach(() => {
+            recentTransaction = wallet.createTransaction({
+              recipient: 'foo-address',
+              amount: 30,
+            });
+            blockchain.addBlock({ data: [recentTransaction] });
+          });
+
+          it('returns the output amount of the recent transaction', () => {
+            expect(
+              Wallet.calculateBalance({
+                chain: blockchain.chain,
+                address: wallet.publicKey,
+              }),
+            ).toEqual(recentTransaction.outputMap[wallet.publicKey]);
+          });
+
+          describe('and there are outputs next to and after the recent transaction', () => {
+            let sameBlockTransaction, nextBlockTransaction;
+
+            beforeEach(() => {
+              recentTransaction = wallet.createTransaction({
+                recipient: 'later-foo-address',
+                amount: 60,
+              });
+              sameBlockTransaction = Transaction.rewardTransaction({
+                minerWallet: wallet,
+              });
+              blockchain.addBlock({
+                data: [recentTransaction, sameBlockTransaction],
+              });
+              nextBlockTransaction = new Wallet().createTransaction({
+                recipient: wallet.publicKey,
+                amount: 75,
+              });
+              blockchain.addBlock({ data: [nextBlockTransaction] });
+            });
+
+            it('includes the output amounts in the returned balance', () => {
+              expect(
+                Wallet.calculateBalance({
+                  chain: blockchain.chain,
+                  address: wallet.publicKey,
+                }),
+              ).toEqual(
+                recentTransaction.outputMap[wallet.publicKey] +
+                  sameBlockTransaction.outputMap[wallet.publicKey] +
+                  nextBlockTransaction.outputMap[wallet.publicKey],
+              );
+            });
+          });
         });
       });
 
