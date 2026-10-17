@@ -125,6 +125,23 @@ describe('Wallet', () => {
           );
         });
       });
+
+      describe('and a chain is passed', () => {
+        it('calls calculateBalance()', () => {
+          const calculateBalanceMock = jest
+            .spyOn(Wallet, 'calculateBalance')
+            .mockReturnValue(STARTING_BALANCE);
+
+          wallet.createTransaction({
+            amount: 10,
+            recipient: 'recipient-public-key',
+            chain: new Blockchain().chain,
+          });
+
+          expect(calculateBalanceMock).toHaveBeenCalled();
+          calculateBalanceMock.mockRestore();
+        });
+      });
     });
   });
 });
