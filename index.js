@@ -25,10 +25,25 @@ pubsub.run().catch((error) => {
   console.error('Redis Pub/Sub startup failed:', error);
 });
 
+// GET endpoints
 app.get('/api/blocks', (req, res) => {
   res.json(blockchain.chain);
 });
 
+app.get('/api/transaction-pool-map', (req, res) => {
+  res.json(transactionPool.transactionMap);
+});
+
+app.get('/api/mine-transactions', (req, res) => {
+  transactionMiner.mineTransactions();
+  res.redirect('/api/blocks');
+});
+
+app.get('/api/wallet-info', (req, res) => {
+  res.json({ address: wallet.publicKey, balance: wallet.balance });
+});
+
+// POST endpoints
 app.post('/api/mine', (req, res) => {
   const { data } = req.body;
   blockchain.addBlock({ data });
@@ -55,15 +70,6 @@ app.post('/api/transact', async (req, res) => {
   transactionPool.setTransaction(transaction);
   await pubsub.broadcastTransaction(transaction);
   res.json({ transaction });
-});
-
-app.get('/api/transaction-pool-map', (req, res) => {
-  res.json(transactionPool.transactionMap);
-});
-
-app.get('/api/mine-transactions', (req, res) => {
-  transactionMiner.mineTransactions();
-  res.redirect('/api/blocks');
 });
 
 const rootPort = 3000;
