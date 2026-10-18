@@ -2,18 +2,19 @@
   "name": "cryptochain",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "test": "jest --coverage",
     "start": "node index",
-    "dev": "nodemon index"
+    "dev": "nodemon index",
+    "build": "parcel build client/src/index.html --dist-dir client/dist"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
-    "jest": "^30.5.2"
+    "jest": "^30.5.2",
+    "parcel": "^2.16.4"
   },
   "dependencies": {
     "@types/jest": "^30.0.0",
@@ -21,6 +22,8 @@
     "elliptic": "^6.6.1",
     "express": "^5.3.0",
     "hex-to-binary": "^1.0.1",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
     "redis": "^6.3.0",
     "tcp-port-used": "^1.0.3",
     "uuid": "^11.1.1"
