@@ -154,6 +154,18 @@ describe('Blockchain', () => {
         });
       });
     });
+
+    describe('and the `validTransactions` flag is true', () => {
+      it('calls validTransactionData()', () => {
+        const validTransactionDataMock = jest
+          .spyOn(Blockchain, 'validTransactionData')
+          .mockReturnValue(true);
+        newChain.addBlock({ data: 'foo' });
+        blockchain.replaceChain(newChain.chain, true);
+        expect(validTransactionDataMock).toHaveBeenCalled();
+        validTransactionDataMock.mockRestore();
+      });
+    });
   });
 
   describe('validTransactionData()', () => {
