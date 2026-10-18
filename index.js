@@ -6,8 +6,10 @@ const axios = require('axios');
 const TransactionPool = require('./wallet/transaction-pool');
 const Wallet = require('./wallet');
 const TransactionMiner = require('./app/transaction-miner');
+const path = require('path');
 
 const app = express();
+app.use(express.static(path.join(__dirname, './client/src'))); // Serve static files from the client/src directory
 app.use(express.json()); // Parse incoming JSON requests
 
 const blockchain = new Blockchain();
@@ -26,6 +28,10 @@ pubsub.run().catch((error) => {
 });
 
 // GET endpoints
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, './client/src/index.html'));
+});
+
 app.get('/api/blocks', (req, res) => {
   res.json(blockchain.chain);
 });
