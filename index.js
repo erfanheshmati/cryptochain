@@ -9,8 +9,27 @@ const TransactionMiner = require('./app/transaction-miner');
 const path = require('path');
 
 const app = express();
+const developmentOrigins = new Set([
+  'http://localhost:1234',
+  'http://127.0.0.1:1234',
+]);
 app.use(express.static(path.join(__dirname, './client/dist')));
 app.use(express.json()); // Parse incoming JSON requests
+app.use('/api', (req, res, next) => {
+  const origin = req.get('Origin');
+
+  if (developmentOrigins.has(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  }
+
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(204);
+  }
+
+  next();
+});
 
 const blockchain = new Blockchain();
 const transactionPool = new TransactionPool();
