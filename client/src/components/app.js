@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import Blocks from './blocks';
 
 export default function App() {
   const [walletInfo, setWalletInfo] = useState({
@@ -27,6 +28,8 @@ export default function App() {
       {error && <p role='alert'>{error}</p>}
       <h3>Address: {walletInfo.address}</h3>
       <h3>Balance: {walletInfo.balance}</h3>
+      <hr />
+      <Blocks />
     </div>
   );
 }
