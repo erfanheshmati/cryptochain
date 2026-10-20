@@ -17,13 +17,14 @@ export default function Blocks() {
   }, []);
 
   return (
-    <div>
-      <h3>
-        Blocks
-        {blocks.map((block) => {
-          return <div key={block.hash}>{block.hash}</div>;
-        })}
-      </h3>
+    <div className='blocks'>
+      <div className='header'>
+        <img src="/images/blockchain.png" alt="" />
+        <h1>Cryptochain</h1>
+      </div>
+      {blocks.map((block) => {
+        return <div key={block.hash} className='block'>{block.hash}</div>;
+      })}
     </div>
   );
 }

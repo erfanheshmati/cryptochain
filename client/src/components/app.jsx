@@ -23,13 +23,25 @@ export default function App() {
   }, []);
 
   return (
-    <div>
-      <h1>Wallet Info: </h1>
-      {error && <p role='alert'>{error}</p>}
-      <h3>Address: {walletInfo.address}</h3>
-      <h3>Balance: {walletInfo.balance}</h3>
-      <hr />
+    <>
+      <div className='wallet'>
+        <div>
+          <img src='/images/wallet.png' />
+        </div>
+        <div>
+          <h1>Your Wallet</h1>
+          {error && <p role='alert'>{error}</p>}
+          <div className='address'>
+            <i className='fas fa-key'></i>
+            Address: {walletInfo.address}
+          </div>
+          <div className='balance'>
+            <i className='fas fa-coins'></i>
+            Balance: {walletInfo.balance}
+          </div>
+        </div>
+      </div>
       <Blocks />
-    </div>
+    </>
   );
 }
