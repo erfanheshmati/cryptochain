@@ -67,3 +67,21 @@ body {
   margin-bottom: 20px;
   color: white;
 }
+
+.block div {
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.block .show {
+  background-color: white;
+  color: rgba(41, 128, 188, 0.5);
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.block .show:hover {
+  border: 1px solid white;
+  background-color: transparent;
+  color: white;
+}
