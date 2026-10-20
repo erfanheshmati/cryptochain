@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import Block from './block';
 
 export default function Blocks() {
   const [blocks, setBlocks] = useState([]);
@@ -23,7 +24,8 @@ export default function Blocks() {
         <h1>Cryptochain</h1>
       </div>
       {blocks.map((block) => {
-        return <div key={block.hash} className='block'>{block.hash}</div>;
+        // return <div key={block.hash} className='block'>{block.hash}</div>;
+        return <Block key={block.hash} block={block} />
       })}
     </div>
   );
