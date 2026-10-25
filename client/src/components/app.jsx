@@ -12,7 +12,7 @@ export default function App() {
 
   useEffect(() => {
     axios
-      .get('http://localhost:3000/api/wallet-info')
+      .get(`${document.location.origin}/api/wallet-info`)
       .then((response) => {
         setWalletInfo(response.data);
       })

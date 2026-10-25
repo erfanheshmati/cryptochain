@@ -25,7 +25,7 @@ export default function ConductTransaction() {
         setLoading(true)
 
         axios
-            .post("http://localhost:3000/api/transact", {
+            .post(`${document.location.origin}/api/transact`, {
                 recipient: recipientValue,
                 amount: Number(amountValue),
             })

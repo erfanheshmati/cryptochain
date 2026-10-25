@@ -7,13 +7,21 @@ export default function TransactionPool() {
     const [transactionMap, setTransactionMap] = useState({})
     const [error, setError] = useState('')
 
-    useEffect(() => {
-        axios.get("http://localhost:3000/api/transaction-pool-map").then((response) => {
+    const getTransactions = async () => {
+        await axios.get(`${document.location.origin}/api/transaction-pool-map`).then((response) => {
             setTransactionMap(response.data)
         }).catch(() => {
             setError('Unable to load the transaction pool. Make sure the API server is running.')
         })
-    }, [])
+    }
+
+    useEffect(() => {
+        getTransactions();
+
+        const intervalId = setInterval(getTransactions, 1000);
+
+        return () => clearInterval(intervalId);
+    }, []);
 
     return (
         <div className='transaction-pool'>

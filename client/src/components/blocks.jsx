@@ -8,7 +8,7 @@ export default function Blocks() {
 
   useEffect(() => {
     axios
-      .get('http://localhost:3000/api/blocks')
+      .get(`${document.location.origin}/api/blocks`)
       .then((response) => {
         setBlocks(response.data);
       })
