@@ -1,5 +1,3 @@
-import React from 'react'
-
 export default function Transaction({ transaction }) {
     const { input, outputMap } = transaction
     const recipients = Object.keys(outputMap)

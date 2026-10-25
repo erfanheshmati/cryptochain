@@ -1,9 +1,11 @@
 import axios from "axios"
 import { useRef, useState } from "react"
+import { Link, useNavigate } from "react-router"
 
 export default function ConductTransaction() {
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
+    const navigate = useNavigate()
 
     const recipient = useRef()
     const amount = useRef()
@@ -32,6 +34,7 @@ export default function ConductTransaction() {
                     alert(response.data.message)
                 } else {
                     alert('Success')
+                    navigate('/transaction-pool', { replace: true })
                 }
             })
             .catch((err) => {
@@ -48,6 +51,7 @@ export default function ConductTransaction() {
             <input type="number" ref={amount} placeholder='amount' />
             {error && <div className="error">*{error}</div>}
             <button type='submit'>{loading ? "Sending..." : "Send"}</button>
+            <Link to="/" style={{ marginLeft: "10px" }}><button>Home</button></Link>
         </form>
     )
 }

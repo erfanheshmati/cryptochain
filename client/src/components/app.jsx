@@ -34,6 +34,9 @@ export default function App() {
           <Link to="/transact">
             <button>Send Money</button>
           </Link>
+          <Link to="/transaction-pool" style={{ marginLeft: "10px" }}>
+            <button>See Pool</button>
+          </Link>
           {error && <p role='alert'>{error}</p>}
           <div className='address'>
             <i className='fas fa-key'></i>
