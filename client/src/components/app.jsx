@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import Blocks from './blocks';
+import { Link } from 'react-router';
 
 export default function App() {
   const [walletInfo, setWalletInfo] = useState({
@@ -30,6 +31,9 @@ export default function App() {
         </div>
         <div>
           <h1>Your Wallet</h1>
+          <Link to="/transact">
+            <button>Send Money</button>
+          </Link>
           {error && <p role='alert'>{error}</p>}
           <div className='address'>
             <i className='fas fa-key'></i>

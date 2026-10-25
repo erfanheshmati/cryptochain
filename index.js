@@ -47,10 +47,6 @@ pubsub.run().catch((error) => {
 });
 
 // GET endpoints
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, './client/dist/index.html'));
-});
-
 app.get('/api/blocks', (req, res) => {
   res.json(blockchain.chain);
 });
@@ -95,6 +91,10 @@ app.post('/api/transact', async (req, res) => {
   transactionPool.setTransaction(transaction);
   await pubsub.broadcastTransaction(transaction);
   res.json({ transaction });
+});
+
+app.get('/{*splat}', (req, res) => {
+  res.sendFile(path.join(__dirname, './client/dist/index.html'));
 });
 
 const walletFoo = new Wallet();
